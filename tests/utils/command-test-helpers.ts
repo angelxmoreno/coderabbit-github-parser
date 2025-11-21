@@ -1,7 +1,8 @@
 import type { Logger } from 'pino';
 import { appContainer } from '../../src/config.ts';
 import { APP_LOGGER_TOKEN } from '../../src/types/di-tokens.ts';
-import { createTestContainer, type MockLogger } from './test-container.ts';
+import type { MockLogger } from '../helpers/createMockLogger.ts';
+import { createTestContainer } from './test-container.ts';
 
 // Helper for testing command actions with mocked dependencies
 export const testCommandAction = async (
