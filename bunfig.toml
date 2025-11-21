@@ -1,0 +1,5 @@
+# scripts to run before `bun run`-ing a file or script
+# register plugins by adding them to this list
+preload = ["./src/preload.ts"]
+[test]
+preload = ["./src/preload.ts"]

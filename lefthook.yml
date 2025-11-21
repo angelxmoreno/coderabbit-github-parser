@@ -11,6 +11,11 @@ pre-commit:
       skip:
         - merge
         - rebase
+    test:
+      run: bun run test
+      skip:
+        - merge
+        - rebase
 commit-msg:
   parallel: true
   commands:

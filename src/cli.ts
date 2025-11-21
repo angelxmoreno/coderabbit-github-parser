@@ -1,5 +1,4 @@
 #!/usr/bin/env bun
-import 'reflect-metadata';
 import { Command } from 'commander';
 import type { Logger } from 'pino';
 import { helloProgram } from './commands/HelloCommand.ts';
