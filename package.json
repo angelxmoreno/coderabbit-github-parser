@@ -10,7 +10,8 @@
         "typecheck": "tsc --noEmit",
         "lint": "biome check .",
         "lint:fix": "biome check --write .",
-        "check": "bun run lint:fix && bun run typecheck && bun run test"
+        "check": "bun run lint:fix && bun run typecheck && bun run test",
+        "hello": "bun src/cli.ts hello"
     },
     "dependencies": {
         "@inquirer/prompts": "^8.0.1",
