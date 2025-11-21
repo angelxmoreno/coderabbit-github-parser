@@ -1,8 +1,9 @@
+import type { Logger } from 'pino';
 import { AppLogger, appContainer } from '../config.ts';
 import { createTypedCommand, type TypedActionFunction } from './types.ts';
 
-const helloAction: TypedActionFunction<[name: string]> = async (name: string) => {
-    const logger = appContainer.resolve(AppLogger);
+const helloAction: TypedActionFunction<[name: string]> = async (name: string = 'World'): Promise<void> => {
+    const logger = appContainer.resolve<Logger>(AppLogger);
     logger.debug({ args: { name } }, 'arguments received');
     logger.info(`Hello ${name}!`);
 };

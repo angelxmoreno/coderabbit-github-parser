@@ -13,7 +13,7 @@ export type AppCommand = {
     arguments?: ArgParts[];
 };
 
-// Helper type for creating type-safe action functions
+// Helper type for creating type-safe action functions with explicit return type
 export type TypedActionFunction<T extends unknown[]> = (...args: T) => Promise<void>;
 
 // Helper function to create type-safe commands

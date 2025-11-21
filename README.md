@@ -1,5 +1,8 @@
 # CodeRabbit GitHub Parser
 
+[![CI](https://github.com/amoreno/coderabbit-github-parser/actions/workflows/ci.yml/badge.svg)](https://github.com/amoreno/coderabbit-github-parser/actions/workflows/ci.yml)
+[![Code Quality](https://github.com/amoreno/coderabbit-github-parser/actions/workflows/quality.yml/badge.svg)](https://github.com/amoreno/coderabbit-github-parser/actions/workflows/quality.yml)
+
 A CLI tool that fetches GitHub pull request comments from the current branch and parses them into markdown format for AI agent consumption.
 
 ## Overview

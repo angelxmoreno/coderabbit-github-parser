@@ -1,8 +1,9 @@
 #!/usr/bin/env bun
-import 'reflect-metadata';
 import { Command } from 'commander';
+import type { Logger } from 'pino';
 import { helloProgram } from './commands/HelloCommand.ts';
-import { AppLogger, appContainer, LogLevel } from './config.ts';
+import { AppLogger, appContainer, LogLevelDI } from './config.ts';
+import type { LogLevel } from './types/di-tokens.ts';
 import { registerCommand } from './utils/registerCommand.ts';
 
 const program = new Command();
@@ -16,7 +17,7 @@ program
 program.hook('preAction', () => {
     if (program.opts().debug) {
         // Update the log level before resolving logger
-        appContainer.register<string>(LogLevel, { useValue: 'debug' });
+        appContainer.register<LogLevel>(LogLevelDI, { useValue: 'debug' });
     }
 });
 
@@ -31,7 +32,7 @@ try {
     process.exit(0); // Exit successfully after async operations complete
 } catch (error: unknown) {
     // Resolve logger here, after parseAsync/preAction has run
-    const logger = appContainer.resolve(AppLogger);
+    const logger = appContainer.resolve<Logger>(AppLogger);
 
     if (error instanceof Error && 'code' in error) {
         if (error.code === 'commander.help' || error.code === 'commander.helpDisplayed') {
