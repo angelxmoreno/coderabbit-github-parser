@@ -10,11 +10,16 @@
         "typecheck": "tsc --noEmit",
         "lint": "biome check .",
         "lint:fix": "biome check --write .",
-        "check": "bun run lint:fix && bun run typecheck && bun run test"
+        "check": "bun run lint:fix && bun run typecheck && bun run test",
+        "hello": "bun src/cli.ts hello"
     },
     "dependencies": {
+        "@inquirer/prompts": "^8.0.1",
+        "commander": "^14.0.2",
         "pino": "^10.1.0",
-        "pino-pretty": "^13.1.2"
+        "pino-pretty": "^13.1.2",
+        "reflect-metadata": "^0.2.2",
+        "tsyringe": "^4.10.0"
     },
     "devDependencies": {
         "@biomejs/biome": "^2.3.7",
