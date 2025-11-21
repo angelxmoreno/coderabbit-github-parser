@@ -11,7 +11,7 @@ describe('HelloCommand', () => {
     });
 
     test('should greet with World when no name provided', async () => {
-        const { mockLogger } = await testCommandAction(helloProgram.action, ['World']);
+        const { mockLogger } = await testCommandAction(helloProgram.action, []);
 
         const infoMessages = getLogMessages(mockLogger, 'info');
         expect(infoMessages).toContain('Hello World!');
