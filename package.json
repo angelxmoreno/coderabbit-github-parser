@@ -1,12 +1,29 @@
 {
-  "name": "coderabbit-github-parser",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  }
+    "name": "coderabbit-github-parser",
+    "module": "index.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "prepare": "bun lefthook install",
+        "build": "tsc",
+        "test": "bun test",
+        "typecheck": "tsc --noEmit",
+        "lint": "biome check .",
+        "lint:fix": "biome check --write .",
+        "check": "bun run lint:fix && bun run typecheck && bun run test"
+    },
+    "dependencies": {
+        "pino": "^10.1.0",
+        "pino-pretty": "^13.1.2"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "^2.3.7",
+        "@commitlint/cli": "^20.1.0",
+        "@commitlint/config-conventional": "^20.0.0",
+        "lefthook": "^2.0.4",
+        "@types/bun": "^1.3.2"
+    },
+    "peerDependencies": {
+        "typescript": "^5.9.3"
+    }
 }
