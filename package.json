@@ -6,7 +6,7 @@
     "scripts": {
         "prepare": "bun lefthook install",
         "build": "tsc",
-        "test": "bun test",
+        "test": "bun test --preload ./tests/setup.ts",
         "typecheck": "tsc --noEmit",
         "lint": "biome check .",
         "lint:fix": "biome check --write .",
