@@ -1,4 +1,3 @@
-import type { Logger } from 'pino';
 import { container } from 'tsyringe';
 import { APP_LOGGER_TOKEN, LOG_LEVEL_TOKEN, type LogLevel } from '../../src/types/di-tokens.ts';
 
