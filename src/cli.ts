@@ -23,9 +23,6 @@ program.hook('preAction', () => {
 // Register commands
 registerCommand(program, helloProgram);
 
-// Resolve logger after potential level change
-const logger = appContainer.resolve(AppLogger);
-
 // Error handling
 program.exitOverride();
 
@@ -33,7 +30,9 @@ try {
     await program.parseAsync(process.argv); // Use parseAsync and await it
     process.exit(0); // Exit successfully after async operations complete
 } catch (error: unknown) {
-    // console.log({ error }); // Remove redundant log
+    // Resolve logger here, after parseAsync/preAction has run
+    const logger = appContainer.resolve(AppLogger);
+
     if (error instanceof Error && 'code' in error) {
         if (error.code === 'commander.help' || error.code === 'commander.helpDisplayed') {
             process.exit(0);
