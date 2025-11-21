@@ -84,12 +84,13 @@ test('should create logger with specified level', () => {
 - **Parameters**: Same as `getLogMessages`
 - **Returns**: Array of log data objects
 
-### `createMockLogger(level)`
+### `createMockLogger(level)` (from `helpers/createMockLogger.ts`)
 
-- **Purpose**: Create a mock logger for isolated testing
+- **Purpose**: Create a fully-compatible pino mock logger for testing
 - **Parameters**:
   - `level`: Initial log level (default: 'info')
-- **Returns**: MockLogger instance with call tracking
+- **Returns**: MockLogger instance that implements full Logger interface with call tracking
+- **Usage**: Provides a proper pino Logger mock without type casting needed
 
 ### `createTestContainer(logLevel)`
 
