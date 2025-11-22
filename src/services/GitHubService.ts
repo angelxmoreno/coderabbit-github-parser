@@ -243,10 +243,14 @@ export class GitHubService {
         // Resolve identifier to numeric PR number for REST API
         const prNumber = await this.resolvePrNumber(options.prIdentifier, options.repo);
 
-        // Use GitHub API directly for review comments
-        const repoFlag = options.repo ? `--repo ${this.escapeShellArg(options.repo)}` : '';
-        const cmd = `gh api repos/:owner/:repo/pulls/${prNumber}/comments ${repoFlag}`.trim();
+        // Build command for GitHub API call for review comments
+        const args = ['gh', 'api'];
+        if (options.repo) {
+            args.push('--repo', this.escapeShellArg(options.repo));
+        }
+        args.push(`repos/:owner/:repo/pulls/${prNumber}/comments`);
 
+        const cmd = args.join(' ');
         const result = await this.cliRunner(cmd);
         const reviewComments = (await result.json()) as PRReviewComment[];
         return reviewComments;
