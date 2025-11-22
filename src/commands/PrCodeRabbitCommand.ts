@@ -131,12 +131,10 @@ const prCodeRabbitAction: TypedActionFunction<[prIdentifier: string], PrCodeRabb
             }
 
             if (comment.parsed.aiPrompt) {
-                console.log('<details>');
-                console.log('<summary>🤖 AI Prompt</summary>\n');
+                console.log('**🤖 AI Prompt:**\n');
                 console.log('```');
                 console.log(comment.parsed.aiPrompt);
                 console.log('```\n');
-                console.log('</details>\n');
             }
 
             console.log('---\n');
