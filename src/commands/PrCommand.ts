@@ -35,14 +35,19 @@ const prAction: TypedActionFunction<[], PrListCommandOptions> = async (options):
         draft: options.draft,
     };
 
-    const results = await ghService.getPrList(serviceOptions);
-    logger.debug({ prList: results }, 'fetched list of PRs');
+    try {
+        const results = await ghService.getPrList(serviceOptions);
+        logger.debug({ prList: results }, 'fetched list of PRs');
 
-    const data: string[][] = [['Author', 'Number', 'Title', 'State']];
-    for (const result of results) {
-        data.push([result.author.login, result.number.toString(), result.title, result.state]);
+        const data: string[][] = [['Author', 'Number', 'Title', 'State']];
+        for (const result of results) {
+            data.push([result.author.login, result.number.toString(), result.title, result.state]);
+        }
+        console.log(table(data));
+    } catch (error) {
+        logger.error({ error, options }, 'Failed to fetch PR list');
+        throw error;
     }
-    console.log(table(data));
 };
 
 export const prProgram = createTypedCommand(
