@@ -143,9 +143,13 @@ export class GitHubService {
 
         const cmd = args.join(' ');
         const result = await this.cliRunner(cmd);
-        const data = (await result.json()) as PRInfo[];
-        this.logger.debug({ prList: data }, 'PR list fetched');
-        return data;
+        const data = await result.json();
+        if (!Array.isArray(data)) {
+            throw new Error('Unexpected response format from gh pr list');
+        }
+        const prList = data as PRInfo[];
+        this.logger.debug({ prList }, 'PR list fetched');
+        return prList;
     }
 
     async getCurrentPr(): Promise<PRInfo | null> {
