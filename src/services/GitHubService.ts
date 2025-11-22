@@ -108,27 +108,31 @@ export class GitHubService {
         this.logger = logger.child({ name: 'GitHubService' });
     }
 
+    private escapeShellArg(arg: string): string {
+        return `'${arg.replace(/'/g, "'\\''")}'`;
+    }
+
     async getPrList(options: PrListOptions = {}): Promise<PRInfo[]> {
         this.logger.debug({ options }, 'Fetching PR list');
 
         const args = ['gh', 'pr', 'list'];
 
         // Add flags based on options
-        if (options.app) args.push('--app', options.app);
-        if (options.assignee) args.push('--assignee', options.assignee);
-        if (options.author) args.push('--author', options.author);
-        if (options.base) args.push('--base', options.base);
+        if (options.app) args.push('--app', this.escapeShellArg(options.app));
+        if (options.assignee) args.push('--assignee', this.escapeShellArg(options.assignee));
+        if (options.author) args.push('--author', this.escapeShellArg(options.author));
+        if (options.base) args.push('--base', this.escapeShellArg(options.base));
         if (options.draft) args.push('--draft');
-        if (options.head) args.push('--head', options.head);
+        if (options.head) args.push('--head', this.escapeShellArg(options.head));
         if (options.label) {
             for (const label of options.label) {
-                args.push('--label', label);
+                args.push('--label', this.escapeShellArg(label));
             }
         }
         if (options.limit) args.push('--limit', options.limit.toString());
-        if (options.search) args.push('--search', options.search);
+        if (options.search) args.push('--search', this.escapeShellArg(options.search));
         if (options.state) args.push('--state', options.state);
-        if (options.repo) args.push('--repo', options.repo);
+        if (options.repo) args.push('--repo', this.escapeShellArg(options.repo));
 
         // Always add JSON output format
         args.push('--json', 'number,title,state,author');
@@ -185,7 +189,7 @@ export class GitHubService {
         const args = ['gh', 'pr', 'view', options.prIdentifier.toString()];
 
         if (options.repo) {
-            args.push('--repo', options.repo);
+            args.push('--repo', this.escapeShellArg(options.repo));
         }
 
         args.push('--json', 'comments');
@@ -198,7 +202,7 @@ export class GitHubService {
 
     private async getReviewComments(options: PrCommentsOptions): Promise<PRReviewComment[]> {
         // Use GitHub API directly for review comments
-        const repoFlag = options.repo ? `--repo ${options.repo}` : '';
+        const repoFlag = options.repo ? `--repo ${this.escapeShellArg(options.repo)}` : '';
         const cmd = `gh api repos/:owner/:repo/pulls/${options.prIdentifier}/comments ${repoFlag}`.trim();
 
         const result = await this.cliRunner(cmd);
