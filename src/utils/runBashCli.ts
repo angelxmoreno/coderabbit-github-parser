@@ -30,9 +30,8 @@ export const runBashCommand: ShellRunner = async (command: string, logger?: Logg
     childLogger.debug({ command }, 'Executing shell command');
 
     try {
-        // Split command into parts and use spread to properly execute
-        const parts = command.split(' ');
-        const result = await $`${parts}`.quiet();
+        // Execute command string directly to handle quoted arguments properly
+        const result = await $`${command}`.quiet();
 
         childLogger.debug(
             {
