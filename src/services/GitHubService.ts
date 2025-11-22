@@ -60,6 +60,10 @@ export interface PRReviewComment {
     line: number;
     diff_hunk: string;
     author_association: string;
+    commit_id: string;
+    original_commit_id: string;
+    position?: number;
+    original_position?: number;
     type: 'review';
 }
 
@@ -111,6 +115,22 @@ export class GitHubService {
 
     private escapeShellArg(arg: string): string {
         return `'${arg.replace(/'/g, "'\\''")}'`;
+    }
+
+    private isCommentResolved(comment: PRReviewComment): boolean {
+        // Check if comment body contains resolution indicators
+        const body = comment.body;
+        return (
+            body.includes('✅ Addressed in commits') ||
+            body.includes('✅ Resolved') ||
+            body.includes('<!-- resolved -->')
+        );
+    }
+
+    private isCommentOutdated(comment: PRReviewComment): boolean {
+        // A comment is outdated if the commit it was made on differs from the original commit
+        // and it doesn't have a current position (meaning the line it references no longer exists)
+        return comment.commit_id !== comment.original_commit_id && !comment.position;
     }
 
     private async resolvePrNumber(identifier: string | number, repo?: string): Promise<number> {
@@ -256,12 +276,16 @@ export class GitHubService {
         return reviewComments;
     }
 
-    async getParsedCodeRabbitComments(options: PrCommentsOptions): Promise<CodeRabbitPRReviewComment[]> {
-        this.logger.debug({ options }, 'Fetching and parsing CodeRabbit comments');
+    async getParsedCodeRabbitComments(
+        options: PrCommentsOptions,
+        includeResolved = false,
+        includeOutdated = false
+    ): Promise<CodeRabbitPRReviewComment[]> {
+        this.logger.debug({ options, includeResolved, includeOutdated }, 'Fetching and parsing CodeRabbit comments');
 
         const reviewComments = await this.getReviewComments(options);
 
-        const codeRabbitComments = reviewComments
+        let codeRabbitComments = reviewComments
             .filter((comment) => isCodeRabbitComment(comment.user.login))
             .map((comment) => {
                 const parsed = parseCodeRabbitComment(comment.body);
@@ -276,12 +300,27 @@ export class GitHubService {
             })
             .filter((comment): comment is CodeRabbitPRReviewComment => comment !== null);
 
+        // Apply filtering for resolved/outdated comments
+        if (!includeResolved) {
+            const beforeCount = codeRabbitComments.length;
+            codeRabbitComments = codeRabbitComments.filter((comment) => !this.isCommentResolved(comment));
+            this.logger.debug(`Filtered out ${beforeCount - codeRabbitComments.length} resolved comments`);
+        }
+
+        if (!includeOutdated) {
+            const beforeCount = codeRabbitComments.length;
+            codeRabbitComments = codeRabbitComments.filter((comment) => !this.isCommentOutdated(comment));
+            this.logger.debug(`Filtered out ${beforeCount - codeRabbitComments.length} outdated comments`);
+        }
+
         this.logger.debug(
             {
                 totalReviewComments: reviewComments.length,
                 codeRabbitComments: codeRabbitComments.length,
+                includeResolved,
+                includeOutdated,
             },
-            'CodeRabbit comments parsed'
+            'CodeRabbit comments parsed and filtered'
         );
 
         return codeRabbitComments;

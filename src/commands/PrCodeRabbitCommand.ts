@@ -9,6 +9,8 @@ type PrCodeRabbitCommandOptions = {
     format?: 'table' | 'json' | 'markdown';
     type?: 'issue' | 'suggestion' | 'all';
     severity?: 'critical' | 'major' | 'minor' | 'info' | 'all';
+    includeResolved?: boolean;
+    includeOutdated?: boolean;
 };
 
 const prCodeRabbitAction: TypedActionFunction<[prIdentifier: string], PrCodeRabbitCommandOptions> = async (
@@ -26,7 +28,11 @@ const prCodeRabbitAction: TypedActionFunction<[prIdentifier: string], PrCodeRabb
         repo: options.repo,
     };
 
-    const parsedComments = await ghService.getParsedCodeRabbitComments(serviceOptions);
+    const parsedComments = await ghService.getParsedCodeRabbitComments(
+        serviceOptions,
+        options.includeResolved || false,
+        options.includeOutdated || false
+    );
     logger.debug({ comments: parsedComments.length }, 'fetched parsed CodeRabbit comments');
 
     // Apply filters
@@ -237,6 +243,14 @@ export const prCodeRabbitProgram = createTypedCommand(
                 flags: '-s, --severity <severity>',
                 description: 'Filter by severity: critical, major, minor, info, or all',
                 defaultValue: 'all',
+            },
+            {
+                flags: '--include-resolved',
+                description: 'Include comments that have been marked as resolved',
+            },
+            {
+                flags: '--include-outdated',
+                description: 'Include comments that are outdated (apply to old code)',
             },
         ],
     },
