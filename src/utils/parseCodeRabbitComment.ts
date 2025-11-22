@@ -55,10 +55,11 @@ export function parseCodeRabbitComment(body: string): ParsedCodeRabbitComment | 
         return null;
     }
 
-    // Determine type from emoji/text
-    const type: CodeRabbitCommentType = rawEmoji.includes('issue')
+    // Determine type from emoji/text (case-insensitive)
+    const emojiLower = rawEmoji.toLowerCase();
+    const type: CodeRabbitCommentType = emojiLower.includes('issue')
         ? 'issue'
-        : rawEmoji.includes('suggestion') || rawEmoji.includes('Refactor')
+        : emojiLower.includes('suggestion') || emojiLower.includes('refactor')
           ? 'suggestion'
           : 'other';
 
@@ -77,11 +78,18 @@ export function parseCodeRabbitComment(body: string): ParsedCodeRabbitComment | 
     const title = titleMatch?.[1] || 'No title found';
 
     // Extract description (text between title and first <details>)
-    const descriptionStart = body.indexOf(`**${title}**`) + title.length + 4;
-    const firstDetailsIndex = body.indexOf('<details>');
-    const descriptionEnd = firstDetailsIndex > -1 ? firstDetailsIndex : body.length;
-
-    let description = body.substring(descriptionStart, descriptionEnd).trim();
+    let description: string;
+    if (titleMatch) {
+        const descriptionStart = body.indexOf(`**${title}**`) + title.length + 4;
+        const firstDetailsIndex = body.indexOf('<details>');
+        const descriptionEnd = firstDetailsIndex > -1 ? firstDetailsIndex : body.length;
+        description = body.substring(descriptionStart, descriptionEnd).trim();
+    } else {
+        // If no title found, use text up to first <details> or entire body
+        const firstDetailsIndex = body.indexOf('<details>');
+        const descriptionEnd = firstDetailsIndex > -1 ? firstDetailsIndex : body.length;
+        description = body.substring(0, descriptionEnd).trim();
+    }
 
     // Clean up description - remove multiple newlines and markdown artifacts
     description = description.replace(/\n\n+/g, '\n').replace(/^\n|\n$/g, '');
