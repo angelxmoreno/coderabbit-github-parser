@@ -23,7 +23,15 @@ const prAction: TypedActionFunction<[], PrListCommandOptions> = async (options):
         state: options.state,
         author: options.author,
         assignee: options.assignee,
-        limit: options.limit ? Number.parseInt(options.limit, 10) : undefined,
+        limit: options.limit
+            ? (() => {
+                  const parsed = Number.parseInt(options.limit, 10);
+                  if (Number.isNaN(parsed)) {
+                      throw new Error(`Invalid limit value: ${options.limit}`);
+                  }
+                  return parsed;
+              })()
+            : undefined,
         draft: options.draft,
     };
 
