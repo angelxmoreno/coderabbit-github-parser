@@ -105,7 +105,7 @@ export class GitHubService {
 
     constructor({ cliRunner, logger }: GitHubServiceOptions) {
         this.cliRunner = cliRunner;
-        this.logger = logger.child({ name: 'GitService' });
+        this.logger = logger.child({ name: 'GitHubService' });
     }
 
     async getPrList(options: PrListOptions = {}): Promise<PRInfo[]> {
