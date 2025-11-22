@@ -15,7 +15,8 @@ export type GitHubServiceOptions = {
     cliRunner: ShellRunner;
 };
 
-export type PrState = 'open' | 'closed' | 'merged' | 'all';
+export type PrStateFilter = 'open' | 'closed' | 'merged' | 'all';
+export type PrStateOutput = 'OPEN' | 'CLOSED' | 'MERGED';
 
 export type PRInfo = {
     author: {
@@ -25,7 +26,7 @@ export type PRInfo = {
         name: string;
     };
     number: number;
-    state: PrState;
+    state: PrStateOutput;
     title: string;
 };
 
@@ -94,7 +95,7 @@ export type PrListOptions = {
     /** Search pull requests with query */
     search?: string;
     /** Filter by state: {open|closed|merged|all} (default "open") */
-    state?: PrState;
+    state?: PrStateFilter;
     /** Select another repository using the [HOST/]OWNER/REPO format */
     repo?: string;
 };

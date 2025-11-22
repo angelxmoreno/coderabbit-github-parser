@@ -1,11 +1,11 @@
 import type { Logger } from 'pino';
 import { table } from 'table';
 import { AppLogger, appContainer } from '../config.ts';
-import { GitHubService, type PrListOptions } from '../services/GitHubService.ts';
+import { GitHubService, type PrListOptions, type PrStateFilter } from '../services/GitHubService.ts';
 import { createTypedCommand, type TypedActionFunction } from './types.ts';
 
 type PrListCommandOptions = {
-    state?: 'open' | 'closed' | 'merged' | 'all';
+    state?: PrStateFilter;
     author?: string;
     assignee?: string;
     limit?: string;
@@ -41,7 +41,7 @@ const prAction: TypedActionFunction<[], PrListCommandOptions> = async (options):
 
         const data: string[][] = [['Author', 'Number', 'Title', 'State']];
         for (const result of results) {
-            data.push([result.author.login, result.number.toString(), result.title, result.state]);
+            data.push([result.author.login, result.number.toString(), result.title, result.state.toLowerCase()]);
         }
         console.log(table(data));
     } catch (error) {
