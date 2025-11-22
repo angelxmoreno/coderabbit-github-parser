@@ -2,6 +2,7 @@ import { $ } from 'bun';
 import type { Logger } from 'pino';
 import { createLogger } from './createLogger.ts';
 
+export type ShellRunner = (command: string, logger?: Logger) => Promise<ShellOutput>;
 export type ShellOutput = Awaited<ReturnType<typeof $>>;
 
 /**
@@ -22,14 +23,16 @@ export type ShellOutput = Awaited<ReturnType<typeof $>>;
  * }
  * ```
  */
-export const runBashCommand = async (command: string, logger?: Logger): Promise<ShellOutput> => {
+export const runBashCommand: ShellRunner = async (command: string, logger?: Logger): Promise<ShellOutput> => {
     const parentLogger = logger ?? createLogger();
     const childLogger = parentLogger.child({ module: 'runBashCommand' });
 
     childLogger.debug({ command }, 'Executing shell command');
 
     try {
-        const result = await $`${command}`.quiet();
+        // Split command into parts and use spread to properly execute
+        const parts = command.split(' ');
+        const result = await $`${parts}`.quiet();
 
         childLogger.debug(
             {
