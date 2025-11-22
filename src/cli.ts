@@ -2,7 +2,9 @@
 import { Command } from 'commander';
 import type { Logger } from 'pino';
 import { helloProgram } from './commands/HelloCommand.ts';
+import { prCodeRabbitProgram } from './commands/PrCodeRabbitCommand.ts';
 import { prProgram } from './commands/PrCommand.ts';
+import { prCommentsProgram } from './commands/PrCommentsCommand.ts';
 import { AppLogger, appContainer, LogLevelDI } from './config.ts';
 import type { LogLevel } from './types/di-tokens.ts';
 import { registerCommand } from './utils/registerCommand.ts';
@@ -25,6 +27,8 @@ program.hook('preAction', () => {
 // Register commands
 registerCommand(program, helloProgram);
 registerCommand(program, prProgram);
+registerCommand(program, prCommentsProgram);
+registerCommand(program, prCodeRabbitProgram);
 
 // Error handling
 program.exitOverride();
