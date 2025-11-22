@@ -153,10 +153,15 @@ export class GitHubService {
     }
 
     async getCurrentPr(): Promise<PRInfo | null> {
-        this.logger.info('Fetching current PR');
+        this.logger.info('Getting current PR');
         const cmd = 'gh pr view --json number,title,state,author';
-        const result = await this.cliRunner(cmd);
-        return (await result.json()) as PRInfo;
+        try {
+            const result = await this.cliRunner(cmd);
+            return (await result.json()) as PRInfo;
+        } catch (_error) {
+            this.logger.debug('No current PR found');
+            return null;
+        }
     }
 
     async getPrComments(options: PrCommentsOptions): Promise<AllPRComments[]> {
