@@ -122,7 +122,11 @@ export class GitHubService {
         if (options.assignee) args.push('--assignee', this.escapeShellArg(options.assignee));
         if (options.author) args.push('--author', this.escapeShellArg(options.author));
         if (options.base) args.push('--base', this.escapeShellArg(options.base));
-        if (options.draft) args.push('--draft');
+        if (options.draft === true) {
+            args.push('--draft');
+        } else if (options.draft === false) {
+            args.push('--draft=false');
+        }
         if (options.head) args.push('--head', this.escapeShellArg(options.head));
         if (options.label) {
             for (const label of options.label) {
