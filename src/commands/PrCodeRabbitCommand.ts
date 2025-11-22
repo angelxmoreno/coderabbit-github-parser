@@ -109,7 +109,9 @@ const prCodeRabbitAction: TypedActionFunction<[prIdentifier: string], PrCodeRabb
                       : '📝 Other';
 
             console.log(`### ${index + 1}. ${comment.parsed.title}`);
-            console.log(`**Location**: \`${comment.path}:${comment.line}\`  `);
+            const locParts = [comment.path, comment.line?.toString()].filter(Boolean);
+            const location = locParts.length ? locParts.join(':') : 'Review';
+            console.log(`**Location**: \`${location}\`  `);
             console.log(`**Type**: ${typeBadge} | **Severity**: ${severityBadge}\n`);
             console.log(`${comment.parsed.description}\n`);
 
@@ -157,10 +159,13 @@ const prCodeRabbitAction: TypedActionFunction<[prIdentifier: string], PrCodeRabb
 
         const typeEmoji = comment.parsed.type === 'issue' ? '⚠️' : comment.parsed.type === 'suggestion' ? '💡' : '📝';
 
+        const locParts = [comment.path, comment.line?.toString()].filter(Boolean);
+        const location = locParts.length ? locParts.join(':') : 'Review';
+
         data.push([
             `${severityEmoji} ${comment.parsed.severity}`,
             `${typeEmoji} ${comment.parsed.type}`,
-            `${comment.path}:${comment.line}`,
+            location,
             comment.parsed.title.slice(0, 60) + (comment.parsed.title.length > 60 ? '...' : ''),
             comment.parsed.suggestion ? '✅' : '❌',
         ]);
