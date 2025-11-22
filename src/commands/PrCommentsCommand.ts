@@ -38,6 +38,9 @@ const prCommentsAction: TypedActionFunction<[prIdentifier: string], PrCommentsCo
         return;
     }
 
+    const makePreview = (body: string): string =>
+        body.slice(0, 80).replace(/\n/g, ' ') + (body.length > 80 ? '...' : '');
+
     const data: string[][] = [['Type', 'Author', 'Created', 'Location', 'Comment Preview']];
 
     for (const comment of comments) {
@@ -50,12 +53,13 @@ const prCommentsAction: TypedActionFunction<[prIdentifier: string], PrCommentsCo
             createdDate = new Date(comment.createdAt).toLocaleDateString();
             author = comment.author.login;
             location = 'Conversation';
-            bodyPreview = comment.body.slice(0, 80).replace(/\n/g, ' ') + (comment.body.length > 80 ? '...' : '');
+            bodyPreview = makePreview(comment.body);
         } else {
             createdDate = new Date(comment.created_at).toLocaleDateString();
             author = comment.user.login;
-            location = `${comment.path}:${comment.line}`;
-            bodyPreview = comment.body.slice(0, 80).replace(/\n/g, ' ') + (comment.body.length > 80 ? '...' : '');
+            const locParts = [comment.path, comment.line?.toString()].filter(Boolean);
+            location = locParts.length ? locParts.join(':') : 'Review';
+            bodyPreview = makePreview(comment.body);
         }
 
         data.push([comment.type === 'conversation' ? '💬' : '📝', author, createdDate, location, bodyPreview]);
