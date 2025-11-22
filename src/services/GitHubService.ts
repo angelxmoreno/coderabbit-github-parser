@@ -112,6 +112,31 @@ export class GitHubService {
         return `'${arg.replace(/'/g, "'\\''")}'`;
     }
 
+    private async resolvePrNumber(identifier: string | number, repo?: string): Promise<number> {
+        // If already a number, return it
+        if (typeof identifier === 'number') {
+            return identifier;
+        }
+
+        // If string looks like a number, parse it
+        const numericId = Number.parseInt(identifier, 10);
+        if (!Number.isNaN(numericId)) {
+            return numericId;
+        }
+
+        // Otherwise, resolve using gh pr view
+        const args = ['gh', 'pr', 'view', this.escapeShellArg(identifier)];
+        if (repo) {
+            args.push('--repo', this.escapeShellArg(repo));
+        }
+        args.push('--json', 'number');
+
+        const cmd = args.join(' ');
+        const result = await this.cliRunner(cmd);
+        const data = (await result.json()) as { number: number };
+        return data.number;
+    }
+
     async getPrList(options: PrListOptions = {}): Promise<PRInfo[]> {
         this.logger.debug({ options }, 'Fetching PR list');
 
@@ -214,9 +239,12 @@ export class GitHubService {
     }
 
     private async getReviewComments(options: PrCommentsOptions): Promise<PRReviewComment[]> {
+        // Resolve identifier to numeric PR number for REST API
+        const prNumber = await this.resolvePrNumber(options.prIdentifier, options.repo);
+
         // Use GitHub API directly for review comments
         const repoFlag = options.repo ? `--repo ${this.escapeShellArg(options.repo)}` : '';
-        const cmd = `gh api repos/:owner/:repo/pulls/${options.prIdentifier}/comments ${repoFlag}`.trim();
+        const cmd = `gh api repos/:owner/:repo/pulls/${prNumber}/comments ${repoFlag}`.trim();
 
         const result = await this.cliRunner(cmd);
         const reviewComments = (await result.json()) as PRReviewComment[];
