@@ -121,6 +121,15 @@ const prCodeRabbitAction: TypedActionFunction<[prIdentifier: string], PrCodeRabb
             console.log(`**Type**: ${typeBadge} | **Severity**: ${severityBadge}\n`);
             console.log(`${comment.parsed.description}\n`);
 
+            if (comment.parsed.aiPrompt) {
+                console.log('**🤖 AI Prompt:**\n');
+                console.log('```');
+                console.log(comment.parsed.aiPrompt);
+                console.log('```\n');
+            }
+
+            console.log('</details>\n');
+
             if (comment.parsed.suggestion) {
                 console.log('<details>');
                 console.log('<summary>📝 Code Suggestion</summary>\n');
@@ -128,13 +137,6 @@ const prCodeRabbitAction: TypedActionFunction<[prIdentifier: string], PrCodeRabb
                 console.log(comment.parsed.suggestion);
                 console.log('```\n');
                 console.log('</details>\n');
-            }
-
-            if (comment.parsed.aiPrompt) {
-                console.log('**🤖 AI Prompt:**\n');
-                console.log('```');
-                console.log(comment.parsed.aiPrompt);
-                console.log('```\n');
             }
 
             console.log('---\n');
