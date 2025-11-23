@@ -1,13 +1,12 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import type { Logger } from 'pino';
 import { AppLogger, appContainer } from '../config.ts';
 import { GitHubService } from '../services/GitHubService.ts';
 import { runBashCommand } from '../utils/runBashCli.ts';
 import { createTypedCommand, type TypedActionFunction } from './types.ts';
 
 const reviewCurrentAction: TypedActionFunction<[]> = async (): Promise<void> => {
-    const logger = appContainer.resolve<Logger>(AppLogger);
+    const logger = appContainer.resolve(AppLogger);
     const ghService = appContainer.resolve(GitHubService);
     logger.debug('Getting current PR and generating review comments');
 

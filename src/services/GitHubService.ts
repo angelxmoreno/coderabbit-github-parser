@@ -153,7 +153,7 @@ export class GitHubService {
         args.push('--json', 'number');
 
         const cmd = args.join(' ');
-        const result = await this.cliRunner(cmd);
+        const result = await this.runCmd(cmd);
         const data = (await result.json()) as { number: number };
         return data.number;
     }
@@ -188,7 +188,7 @@ export class GitHubService {
         args.push('--json', 'number,title,state,author');
 
         const cmd = args.join(' ');
-        const result = await this.cliRunner(cmd);
+        const result = await this.runCmd(cmd);
         const data = await result.json();
         if (!Array.isArray(data)) {
             throw new Error('Unexpected response format from gh pr list');
@@ -202,8 +202,9 @@ export class GitHubService {
         this.logger.info('Getting current PR');
         const cmd = 'gh pr view --json number,title,state,author';
         try {
-            const result = await this.cliRunner(cmd);
-            return (await result.json()) as PRInfo;
+            const result = await this.runCmd(cmd);
+            const parsed = await result.json();
+            return parsed as PRInfo;
         } catch (_error) {
             this.logger.debug('No current PR found');
             return null;
@@ -254,7 +255,7 @@ export class GitHubService {
         args.push('--json', 'comments');
 
         const cmd = args.join(' ');
-        const result = await this.cliRunner(cmd);
+        const result = await this.runCmd(cmd);
         const { comments } = (await result.json()) as { comments: PRComment[] };
         return comments;
     }
@@ -271,7 +272,7 @@ export class GitHubService {
         args.push(`repos/:owner/:repo/pulls/${prNumber}/comments`);
 
         const cmd = args.join(' ');
-        const result = await this.cliRunner(cmd);
+        const result = await this.runCmd(cmd);
         const reviewComments = (await result.json()) as PRReviewComment[];
         return reviewComments;
     }

@@ -1,6 +1,5 @@
 #!/usr/bin/env bun
 import { Command } from 'commander';
-import type { Logger } from 'pino';
 import { helloProgram } from './commands/HelloCommand.ts';
 import { prCodeRabbitProgram } from './commands/PrCodeRabbitCommand.ts';
 import { prProgram } from './commands/PrCommand.ts';
@@ -20,8 +19,8 @@ program
 
 program.hook('preAction', () => {
     if (program.opts().debug) {
-        // Update the log level before resolving logger
-        appContainer.register<LogLevel>(LogLevelDI, { useValue: 'info' });
+        // Register debug log level before any logger resolution
+        appContainer.register<LogLevel>(LogLevelDI, { useValue: 'debug' });
     }
 });
 
