@@ -2,6 +2,7 @@ import { $ } from 'bun';
 import type { Logger } from 'pino';
 import { createLogger } from './createLogger.ts';
 
+export type ShellRunner = (command: string, logger?: Logger) => Promise<ShellOutput>;
 export type ShellOutput = Awaited<ReturnType<typeof $>>;
 
 /**
@@ -22,14 +23,15 @@ export type ShellOutput = Awaited<ReturnType<typeof $>>;
  * }
  * ```
  */
-export const runBashCommand = async (command: string, logger?: Logger): Promise<ShellOutput> => {
+export const runBashCommand: ShellRunner = async (command: string, logger?: Logger): Promise<ShellOutput> => {
     const parentLogger = logger ?? createLogger();
     const childLogger = parentLogger.child({ module: 'runBashCommand' });
 
     childLogger.debug({ command }, 'Executing shell command');
 
     try {
-        const result = await $`${command}`.quiet();
+        // Execute command through shell to handle quoted arguments properly
+        const result = await $`sh -c ${command}`.quiet();
 
         childLogger.debug(
             {

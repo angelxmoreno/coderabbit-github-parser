@@ -16,7 +16,7 @@ export const testCommandAction = async (
 
     // Temporarily replace the logger in the main container for testing
     const originalLogger = appContainer.resolve<Logger>(APP_LOGGER_TOKEN);
-    appContainer.register<MockLogger>(APP_LOGGER_TOKEN, { useValue: mockLogger });
+    appContainer.register(APP_LOGGER_TOKEN, { useValue: mockLogger });
 
     try {
         // Execute the command action
