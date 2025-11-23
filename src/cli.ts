@@ -1,7 +1,10 @@
 #!/usr/bin/env bun
 import { Command } from 'commander';
-import type { Logger } from 'pino';
 import { helloProgram } from './commands/HelloCommand.ts';
+import { prCodeRabbitProgram } from './commands/PrCodeRabbitCommand.ts';
+import { prProgram } from './commands/PrCommand.ts';
+import { prCommentsProgram } from './commands/PrCommentsCommand.ts';
+import { reviewCurrentProgram } from './commands/ReviewCurrentCommand.ts';
 import { AppLogger, appContainer, LogLevelDI } from './config.ts';
 import type { LogLevel } from './types/di-tokens.ts';
 import { registerCommand } from './utils/registerCommand.ts';
@@ -16,13 +19,17 @@ program
 
 program.hook('preAction', () => {
     if (program.opts().debug) {
-        // Update the log level before resolving logger
+        // Register debug log level before any logger resolution
         appContainer.register<LogLevel>(LogLevelDI, { useValue: 'debug' });
     }
 });
 
 // Register commands
 registerCommand(program, helloProgram);
+registerCommand(program, prProgram);
+registerCommand(program, prCommentsProgram);
+registerCommand(program, prCodeRabbitProgram);
+registerCommand(program, reviewCurrentProgram);
 
 // Error handling
 program.exitOverride();
@@ -32,7 +39,7 @@ try {
     process.exit(0); // Exit successfully after async operations complete
 } catch (error: unknown) {
     // Resolve logger here, after parseAsync/preAction has run
-    const logger = appContainer.resolve<Logger>(AppLogger);
+    const logger = appContainer.resolve(AppLogger);
 
     if (error instanceof Error && 'code' in error) {
         if (error.code === 'commander.help' || error.code === 'commander.helpDisplayed') {
