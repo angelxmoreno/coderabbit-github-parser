@@ -128,8 +128,6 @@ const prCodeRabbitAction: TypedActionFunction<[prIdentifier: string], PrCodeRabb
                 console.log('```\n');
             }
 
-            console.log('</details>\n');
-
             if (comment.parsed.suggestion) {
                 console.log('<details>');
                 console.log('<summary>📝 Code Suggestion</summary>\n');

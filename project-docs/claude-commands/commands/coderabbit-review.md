@@ -1,10 +1,10 @@
 ---
 description: CodeRabbit Review Analysis
-argument-hint: [pr-review-path]
+argument-hint: [pr-number]
 model: claude-sonnet-4-5-20250929
 ---
 
-I need your help analyzing and addressing CodeRabbit review comments saved on $ARGUMENTS for PR #<ARGUM>. Please review
+I need your help analyzing and addressing CodeRabbit review comments saved on review-comments/pr$ARGUMENTS.md for PR #$ARGUMENTS. Please review
 the CodeRabbit comments from the file and help me understand and implement the
 suggested fixes.
 
@@ -41,11 +41,10 @@ Please help me with the following:
     - Identify any dependencies between different fixes
     - Estimate effort level (low/medium/high) for each fix
 
-6. **Analysis Summary**: Create a structured summary in this format and save it as review-comments/pr<PR_NUMBER>
-   -analysis.md:
+6. **Analysis Summary**: Create a structured summary in this format and save it as review-comments/pr$ARGUMENTS-analysis.md:
 
 ```markdown
-# CodeRabbit Review Analysis - PR #<PR_NUMBER>
+# CodeRabbit Review Analysis - PR #$ARGUMENTS
 
 ## Comment Assessment Summary
 
