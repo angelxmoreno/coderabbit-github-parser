@@ -15,7 +15,7 @@ type InstallTemplateOptions = {
 
 type InstallScope = 'project' | 'global';
 
-const DEFAULT_FILENAME = 'coderabbit-review-template.md';
+const DEFAULT_FILENAME = 'coderabbit-review.md';
 const PROJECT_COMMANDS_DIR = '.claude/commands'; // User's project directory
 const GLOBAL_COMMANDS_DIR = path.join(os.homedir(), '.claude', 'commands');
 
@@ -156,7 +156,7 @@ const installTemplateAction: TypedActionFunction<[], InstallTemplateOptions> = a
         logger.info(`📄 Location: ${targetFile}`);
         logger.info('📖 Usage:');
         logger.info('1. Generate CodeRabbit comments:');
-        logger.info('   bun pr:coderabbit <PR_NUMBER> --format markdown > review-comments/pr<PR_NUMBER>.md');
+        logger.info('   cgp pr:coderabbit <PR_NUMBER> --format markdown > review-comments/pr<PR_NUMBER>.md');
         logger.info('2. Use the template from your Claude commands directory');
         logger.info('3. Follow the examples in the template for different analysis types');
 
