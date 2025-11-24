@@ -32,14 +32,14 @@ try {
         if (fs.existsSync(cliPath)) {
             let cliContent = fs.readFileSync(cliPath, 'utf-8');
             if (!cliContent.startsWith('#!')) {
-                cliContent = '#!/usr/bin/env bun\n' + cliContent;
+                cliContent = `#!/usr/bin/env bun\n${cliContent}`;
                 fs.writeFileSync(cliPath, cliContent, 'utf-8');
             }
 
             // Make executable on Unix systems
             try {
                 fs.chmodSync(cliPath, 0o755);
-            } catch (error) {
+            } catch (_error) {
                 // Ignore chmod errors on Windows
             }
 

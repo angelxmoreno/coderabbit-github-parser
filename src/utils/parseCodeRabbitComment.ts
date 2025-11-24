@@ -91,8 +91,15 @@ export function parseCodeRabbitComment(body: string): ParsedCodeRabbitComment | 
         description = body.substring(0, descriptionEnd).trim();
     }
 
-    // Clean up description - remove multiple newlines and markdown artifacts
-    description = description.replace(/\n\n+/g, '\n').replace(/^\n|\n$/g, '');
+    // Clean up description - remove HTML tags, multiple newlines and markdown artifacts
+    description = description
+        .replace(/<\/?details[^>]*>/gi, '') // Remove opening/closing details tags
+        .replace(/<\/?summary[^>]*>/gi, '') // Remove opening/closing summary tags
+        .replace(/<[^>]*>/g, '') // Remove any other HTML tags
+        .replace(/\n\n+/g, '\n\n') // Normalize multiple newlines to double newlines
+        .replace(/^\n+|\n+$/g, '') // Trim leading/trailing newlines
+        .replace(/^>+\s*/gm, '') // Remove quote markers
+        .trim();
 
     // Extract code suggestion if present
     let suggestion: string | undefined;
@@ -101,11 +108,22 @@ export function parseCodeRabbitComment(body: string): ParsedCodeRabbitComment | 
         suggestion = suggestionMatch[1].trim();
     }
 
-    // Extract AI prompt if present
+    // Extract AI prompt if present - try multiple patterns for robustness
     let aiPrompt: string | undefined;
-    const promptMatch = body.match(
-        /<summary>🤖 Prompt for AI Agents<\/summary>\s*```\s*([\s\S]*?)\s*```\s*<\/details>/
-    );
+
+    // Pattern 1: Standard format with details/summary
+    let promptMatch = body.match(/<summary>🤖[^<]*<\/summary>\s*```\s*([\s\S]*?)\s*```\s*<\/details>/i);
+
+    // Pattern 2: Just the prompt section with AI emoji
+    if (!promptMatch) {
+        promptMatch = body.match(/🤖[^`]*```\s*([\s\S]*?)\s*```/);
+    }
+
+    // Pattern 3: Look for "AI Prompt:" followed by code block
+    if (!promptMatch) {
+        promptMatch = body.match(/\*\*🤖 AI Prompt:\*\*\s*```\s*([\s\S]*?)\s*```/);
+    }
+
     if (promptMatch?.[1]) {
         aiPrompt = promptMatch[1].trim();
     }

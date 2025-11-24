@@ -30,7 +30,13 @@ const reviewCurrentAction: TypedActionFunction<[]> = async (): Promise<void> => 
 
         // Step 3: Call pr:coderabbit command to get markdown output
         const outputFile = path.join(reviewCommentsDir, `pr${prNumber}.md`);
-        const cliCommand = `bun pr:coderabbit ${prNumber} --format markdown`;
+
+        // Detect if we're in development (source files exist) vs installed package
+        const isDevMode = fs.existsSync(path.join(process.cwd(), 'src', 'cli.ts'));
+
+        const cliCommand = isDevMode
+            ? `bun pr:coderabbit ${prNumber} --format markdown`
+            : `cgp pr:coderabbit ${prNumber} --format markdown`;
 
         logger.debug({ command: cliCommand, outputFile }, 'Calling pr:coderabbit command');
 
