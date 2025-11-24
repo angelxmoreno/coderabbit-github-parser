@@ -29,15 +29,29 @@ This tool streamlines the workflow between GitHub pull requests and development 
 
 ### For End Users
 
+**Install from GitHub Packages:**
+
 ```bash
-# Using npm
-npm install -g coderabbit-github-parser
+# Configure npm to use GitHub Packages for @angelxmoreno scope
+echo "@angelxmoreno:registry=https://npm.pkg.github.com" >> ~/.npmrc
 
-# Using bun
-bun install -g coderabbit-github-parser
+# Install globally
+npm install -g @angelxmoreno/coderabbit-github-parser
 
-# Using the package in a project
-bun add coderabbit-github-parser
+# Or with bun
+bun install -g @angelxmoreno/coderabbit-github-parser
+
+# Using in a project
+npm install @angelxmoreno/coderabbit-github-parser
+```
+
+**Authentication for GitHub Packages:**
+You'll need a GitHub Personal Access Token with `read:packages` permission:
+1. Go to [GitHub Settings > Personal Access Tokens](https://github.com/settings/personal-access-tokens/fine-grained)
+2. Create a fine-grained token with **Packages: Read** permission
+3. Add to your `~/.npmrc`:
+```
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT_TOKEN
 ```
 
 **Note**: This package requires [Bun](https://bun.sh/) to be installed on your system.
@@ -55,6 +69,8 @@ bun install
 Install the CodeRabbit review analysis template to your Claude commands directory for easy access:
 
 ```bash
+@angelxmoreno/coderabbit-github-parser install:template [options]
+# Or with the global alias:
 cgp install:template [options]
 ```
 
@@ -91,6 +107,11 @@ The template provides comprehensive prompts and examples for analyzing CodeRabbi
 List pull requests for the current repository:
 
 ```bash
+# With globally installed package
+cgp pr:list [options]
+# Or with npx
+npx @angelxmoreno/coderabbit-github-parser pr:list [options]
+# Development mode
 bun pr:list [options]
 ```
 
@@ -104,13 +125,13 @@ bun pr:list [options]
 **Examples:**
 ```bash
 # List all open PRs
-bun pr:list --state open
+cgp pr:list --state open
 
 # List PRs by specific author
-bun pr:list --author username
+cgp pr:list --author username
 
 # List first 10 PRs
-bun pr:list --limit 10
+cgp pr:list --limit 10
 ```
 
 ### Fetch PR Comments
@@ -118,7 +139,9 @@ bun pr:list --limit 10
 Fetch all comments (conversation + review comments) for a specific PR:
 
 ```bash
-bun pr:comments <prIdentifier> [options]
+cgp pr:comments <prIdentifier> [options]
+# Or with npx
+npx @angelxmoreno/coderabbit-github-parser pr:comments <prIdentifier> [options]
 ```
 
 **Options:**
@@ -128,13 +151,13 @@ bun pr:comments <prIdentifier> [options]
 **Examples:**
 ```bash
 # Get comments for PR #123
-bun pr:comments 123
+cgp pr:comments 123
 
 # Get comments in JSON format
-bun pr:comments 123 --format json
+cgp pr:comments 123 --format json
 
 # Get comments for PR in different repo
-bun pr:comments 456 --repo owner/repo
+cgp pr:comments 456 --repo owner/repo
 ```
 
 ### Analyze CodeRabbit Comments
@@ -142,7 +165,9 @@ bun pr:comments 456 --repo owner/repo
 Fetch and parse CodeRabbit AI review comments with advanced filtering:
 
 ```bash
-bun pr:coderabbit <prIdentifier> [options]
+cgp pr:coderabbit <prIdentifier> [options]
+# Or with npx
+npx @angelxmoreno/coderabbit-github-parser pr:coderabbit <prIdentifier> [options]
 ```
 
 **Options:**
@@ -161,19 +186,19 @@ bun pr:coderabbit <prIdentifier> [options]
 **Examples:**
 ```bash
 # Get active CodeRabbit comments (default - excludes resolved/outdated)
-bun pr:coderabbit 123
+cgp pr:coderabbit 123
 
 # Get all CodeRabbit comments including resolved and outdated
-bun pr:coderabbit 123 --include-resolved --include-outdated
+cgp pr:coderabbit 123 --include-resolved --include-outdated
 
 # Get only critical issues
-bun pr:coderabbit 123 --severity critical --type issue
+cgp pr:coderabbit 123 --severity critical --type issue
 
 # Generate markdown report
-bun pr:coderabbit 123 --format markdown
+cgp pr:coderabbit 123 --format markdown
 
 # Get suggestions only in JSON format
-bun pr:coderabbit 123 --type suggestion --format json
+cgp pr:coderabbit 123 --type suggestion --format json
 ```
 
 ### Output Formats
@@ -212,11 +237,43 @@ This project uses:
 - **LeftHook** for git hooks
 - **TypeScript** with strict mode enabled
 
+### Release Process
+
+This project uses **release-please** for automated releases:
+
+1. **Conventional Commits**: All commits must follow [conventional commit format](https://www.conventionalcommits.org/)
+   ```bash
+   feat: add new feature
+   fix: resolve bug in component
+   docs: update README
+   chore: update dependencies
+   ```
+
+2. **Automated Releases**: When changes are merged to `main`:
+   - release-please analyzes commit messages
+   - Creates a "Release PR" with version bump and changelog
+   - When Release PR is merged → automatic GitHub release + GitHub Packages publish
+
+3. **Version Bumping**:
+   - `feat:` → minor version bump (1.0.0 → 1.1.0)
+   - `fix:` → patch version bump (1.0.0 → 1.0.1)
+   - `feat!:` or `BREAKING CHANGE:` → major version bump (1.0.0 → 2.0.0)
+
+4. **Manual Release** (if needed):
+   ```bash
+   # Create and merge a Release PR manually
+   gh pr create --title "chore: release 1.1.0" --body "Release version 1.1.0"
+   ```
+
 ### Contributing
 
-1. Follow conventional commits format
-2. Run `bun run check` before committing
-3. Ensure all tests pass and code is properly typed
+1. **Follow conventional commits format** for automated releases
+2. **Run quality checks** before committing:
+   ```bash
+   bun run check  # Runs lint + typecheck + test
+   ```
+3. **Create PR** against `main` branch
+4. **Merge to main** triggers automated release process
 
 ## Requirements
 
