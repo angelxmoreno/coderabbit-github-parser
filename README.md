@@ -27,6 +27,23 @@ This tool streamlines the workflow between GitHub pull requests and development 
 
 ## Installation
 
+### For End Users
+
+```bash
+# Using npm
+npm install -g coderabbit-github-parser
+
+# Using bun
+bun install -g coderabbit-github-parser
+
+# Using the package in a project
+bun add coderabbit-github-parser
+```
+
+**Note**: This package requires [Bun](https://bun.sh/) to be installed on your system.
+
+### For Development
+
 ```bash
 bun install
 ```
