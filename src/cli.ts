@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 import { Command } from 'commander';
 import { helloProgram } from './commands/HelloCommand.ts';
+import { installTemplateProgram } from './commands/InstallTemplateCommand.ts';
 import { prCodeRabbitProgram } from './commands/PrCodeRabbitCommand.ts';
 import { prProgram } from './commands/PrCommand.ts';
 import { prCommentsProgram } from './commands/PrCommentsCommand.ts';
@@ -26,6 +27,7 @@ program.hook('preAction', () => {
 
 // Register commands
 registerCommand(program, helloProgram);
+registerCommand(program, installTemplateProgram);
 registerCommand(program, prProgram);
 registerCommand(program, prCommentsProgram);
 registerCommand(program, prCodeRabbitProgram);

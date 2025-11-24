@@ -16,7 +16,8 @@
         "pr:list": "bun src/cli.ts pr:list",
         "pr:comments": "bun src/cli.ts pr:comments",
         "pr:coderabbit": "bun src/cli.ts pr:coderabbit",
-        "review:current": "bun src/cli.ts review:current"
+        "review:current": "bun src/cli.ts review:current",
+        "install:template": "bun src/cli.ts install:template"
     },
     "dependencies": {
         "@inquirer/prompts": "^8.0.1",
