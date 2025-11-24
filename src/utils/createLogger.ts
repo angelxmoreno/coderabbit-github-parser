@@ -6,6 +6,9 @@ export const createLogger = (level: LogLevel = 'info'): Logger => {
         level,
         transport: {
             target: 'pino-pretty',
+            options: {
+                sync: true, // Use synchronous logging to avoid flush timeout
+            },
         },
     });
 };

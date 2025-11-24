@@ -54,7 +54,7 @@ const installTemplateAction: TypedActionFunction<[], InstallTemplateOptions> = a
     if (!sourceFile) {
         logger.error({ possibleSourcePaths }, 'Source template file not found in any expected location');
         logger.error('Template file could not be located in the installed package.');
-        process.exit(1);
+        throw new Error('Template file not found');
     }
 
     // Determine installation scope and paths
@@ -138,12 +138,12 @@ const installTemplateAction: TypedActionFunction<[], InstallTemplateOptions> = a
 
                 if (!overwrite) {
                     logger.info('Installation cancelled by user');
-                    process.exit(0);
+                    return;
                 }
             } else {
                 logger.warn({ targetFile }, 'Target file already exists');
                 logger.error('File already exists. Use --force to overwrite the existing file.');
-                process.exit(1);
+                throw new Error('File already exists');
             }
         }
 
@@ -169,7 +169,7 @@ const installTemplateAction: TypedActionFunction<[], InstallTemplateOptions> = a
         logger.debug({ targetFile, scope }, 'Template installation completed successfully');
     } catch (error: unknown) {
         logger.error(error, 'Failed to install template');
-        process.exit(1);
+        throw error;
     }
 };
 
