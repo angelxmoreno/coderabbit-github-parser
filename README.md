@@ -50,7 +50,7 @@ You'll need a GitHub Personal Access Token with `read:packages` permission:
 1. Go to [GitHub Settings > Personal Access Tokens](https://github.com/settings/personal-access-tokens/fine-grained)
 2. Create a fine-grained token with **Packages: Read** permission
 3. Add to your `~/.npmrc`:
-```
+```text
 //npm.pkg.github.com/:_authToken=YOUR_GITHUB_PAT_TOKEN
 ```
 

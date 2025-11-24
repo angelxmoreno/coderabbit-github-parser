@@ -34,7 +34,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
-          package-name: coderabbit-github-parser
+          package-name: '@angelxmoreno/coderabbit-github-parser'
 
       - name: Publish to GitHub Packages
         if: ${{ steps.release.outputs.release_created }}
