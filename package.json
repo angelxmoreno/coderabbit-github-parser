@@ -1,5 +1,6 @@
 {
     "name": "coderabbit-github-parser",
+    "version": "1.0.0",
     "module": "src/cli.ts",
     "type": "module",
     "main": "dist/cli.js",
