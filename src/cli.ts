@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+import 'reflect-metadata';
 import { Command } from 'commander';
 import { helloProgram } from './commands/HelloCommand.ts';
 import { installTemplateProgram } from './commands/InstallTemplateCommand.ts';
