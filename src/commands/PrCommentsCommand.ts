@@ -63,12 +63,14 @@ const prCommentsAction: TypedActionFunction<[prIdentifier: string], PrCommentsCo
 
         if (comment.type === 'conversation') {
             createdDate = new Date(comment.createdAt).toLocaleDateString();
-            author = comment.author.login.slice(0, 12); // Truncate long usernames
+            const conversationAuthor = comment.author?.login ?? 'unknown';
+            author = conversationAuthor.slice(0, 12); // Truncate long usernames
             location = 'Conversation';
             bodyPreview = makePreview(comment.body);
         } else {
             createdDate = new Date(comment.created_at).toLocaleDateString();
-            author = comment.user.login.slice(0, 12); // Truncate long usernames
+            const reviewAuthor = comment.user?.login ?? 'unknown';
+            author = reviewAuthor.slice(0, 12); // Truncate long usernames
             const locParts = [comment.path, comment.line?.toString()].filter(Boolean);
             location = truncateLocation(locParts.length ? locParts.join(':') : 'Review');
             bodyPreview = makePreview(comment.body);
