@@ -97,9 +97,12 @@ const prCommentsAction: TypedActionFunction<[prIdentifier: string], PrCommentsCo
         logger.warn('Table rendering failed, falling back to simple output');
 
         for (let i = 1; i < data.length; i++) {
-            const [type, author, date, location, preview] = data[i];
-            console.log(`${type} ${author} (${date}) - ${location}`);
-            console.log(`  ${preview}\n`);
+            const row = data[i];
+            if (row) {
+                const [type, author, date, location, preview] = row;
+                console.log(`${type} ${author} (${date}) - ${location}`);
+                console.log(`  ${preview}\n`);
+            }
         }
     }
 
