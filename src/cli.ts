@@ -1,6 +1,8 @@
 #!/usr/bin/env bun
+import 'reflect-metadata';
 import { Command } from 'commander';
 import { helloProgram } from './commands/HelloCommand.ts';
+import { installTemplateProgram } from './commands/InstallTemplateCommand.ts';
 import { prCodeRabbitProgram } from './commands/PrCodeRabbitCommand.ts';
 import { prProgram } from './commands/PrCommand.ts';
 import { prCommentsProgram } from './commands/PrCommentsCommand.ts';
@@ -14,7 +16,7 @@ const program = new Command();
 program
     .name('coderabbit-github-parser')
     .description('A CLI tool that fetches GitHub PR comments and parses them to markdown for AI agent consumption')
-    .version('0.1.0')
+    .version('1.0.0')
     .option('-d, --debug', 'output extra debugging information');
 
 program.hook('preAction', () => {
@@ -26,6 +28,7 @@ program.hook('preAction', () => {
 
 // Register commands
 registerCommand(program, helloProgram);
+registerCommand(program, installTemplateProgram);
 registerCommand(program, prProgram);
 registerCommand(program, prCommentsProgram);
 registerCommand(program, prCodeRabbitProgram);

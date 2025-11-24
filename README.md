@@ -27,11 +27,64 @@ This tool streamlines the workflow between GitHub pull requests and development 
 
 ## Installation
 
+### For End Users
+
+```bash
+# Using npm
+npm install -g coderabbit-github-parser
+
+# Using bun
+bun install -g coderabbit-github-parser
+
+# Using the package in a project
+bun add coderabbit-github-parser
+```
+
+**Note**: This package requires [Bun](https://bun.sh/) to be installed on your system.
+
+### For Development
+
 ```bash
 bun install
 ```
 
 ## Commands
+
+### Install CodeRabbit Template
+
+Install the CodeRabbit review analysis template to your Claude commands directory for easy access:
+
+```bash
+cgp install:template [options]
+```
+
+**Installation Scopes:**
+- **Global**: `~/.claude/commands` - Available across all projects
+- **Project**: `./.claude/commands` - Available only in current project
+
+**Options:**
+- `--force` - Overwrite existing template file if it exists
+- `--scope <scope>` - Installation scope: `project` or `global` (interactive prompt by default)
+- `--target <path>` - Custom target directory
+- `--filename <name>` - Custom filename (default: `coderabbit-review-template.md`)
+- `--no-interactive` - Run in non-interactive mode with defaults
+
+**Examples:**
+```bash
+# Interactive installation (prompts for scope and options)
+cgp install:template
+
+# Install globally with no prompts
+cgp install:template --no-interactive --scope global
+
+# Install to current project
+cgp install:template --scope project
+
+# Install with custom options
+cgp install:template --filename my-template.md --force
+```
+
+The template provides comprehensive prompts and examples for analyzing CodeRabbit review comments with AI assistance.
 
 ### List Pull Requests
 

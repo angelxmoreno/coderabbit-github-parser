@@ -1,11 +1,23 @@
 {
     "name": "coderabbit-github-parser",
+    "version": "1.0.0",
     "module": "src/cli.ts",
     "type": "module",
-    "private": true,
+    "main": "dist/cli.js",
+    "bin": {
+        "cgp": "dist/cli.js",
+        "coderabbit-github-parser": "dist/cli.js"
+    },
+    "files": [
+        "dist/",
+        "project-docs/",
+        "README.md",
+        "LICENSE"
+    ],
     "scripts": {
         "prepare": "bun lefthook install",
-        "build": "tsc",
+        "build": "bun scripts/build.js",
+        "prepublishOnly": "bun run check && bun run build",
         "test": "bun test --preload ./tests/setup.ts",
         "typecheck": "tsc --noEmit",
         "lint": "biome check .",
@@ -16,7 +28,8 @@
         "pr:list": "bun src/cli.ts pr:list",
         "pr:comments": "bun src/cli.ts pr:comments",
         "pr:coderabbit": "bun src/cli.ts pr:coderabbit",
-        "review:current": "bun src/cli.ts review:current"
+        "review:current": "bun src/cli.ts review:current",
+        "install:template": "bun src/cli.ts install:template"
     },
     "dependencies": {
         "@inquirer/prompts": "^8.0.1",
@@ -32,9 +45,10 @@
         "@commitlint/cli": "^20.1.0",
         "@commitlint/config-conventional": "^20.0.0",
         "@types/bun": "^1.3.2",
-        "lefthook": "^2.0.4"
-    },
-    "peerDependencies": {
+        "lefthook": "^2.0.4",
         "typescript": "^5.9.3"
+    },
+    "engines": {
+        "bun": ">=1.0.0"
     }
 }

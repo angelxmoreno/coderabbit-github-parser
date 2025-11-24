@@ -38,8 +38,20 @@ const prCommentsAction: TypedActionFunction<[prIdentifier: string], PrCommentsCo
         return;
     }
 
-    const makePreview = (body: string): string =>
-        body.slice(0, 80).replace(/\n/g, ' ') + (body.length > 80 ? '...' : '');
+    // Get terminal width for responsive table sizing
+    const terminalWidth = process.stdout.columns || 120;
+    const availableContentWidth = Math.max(30, terminalWidth - 40); // Reserve space for other columns
+    const previewWidth = Math.min(50, Math.floor(availableContentWidth * 0.6));
+    const locationWidth = Math.min(20, Math.floor(availableContentWidth * 0.4));
+
+    const makePreview = (body: string): string => {
+        const cleanBody = body.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+        return cleanBody.slice(0, previewWidth - 3) + (cleanBody.length > previewWidth - 3 ? '...' : '');
+    };
+
+    const truncateLocation = (location: string): string => {
+        return location.length > locationWidth ? `${location.slice(0, locationWidth - 3)}...` : location;
+    };
 
     const data: string[][] = [['Type', 'Author', 'Created', 'Location', 'Comment Preview']];
 
@@ -51,28 +63,50 @@ const prCommentsAction: TypedActionFunction<[prIdentifier: string], PrCommentsCo
 
         if (comment.type === 'conversation') {
             createdDate = new Date(comment.createdAt).toLocaleDateString();
-            author = comment.author.login;
+            const conversationAuthor = comment.author?.login ?? 'unknown';
+            author = conversationAuthor.slice(0, 12); // Truncate long usernames
             location = 'Conversation';
             bodyPreview = makePreview(comment.body);
         } else {
             createdDate = new Date(comment.created_at).toLocaleDateString();
-            author = comment.user.login;
+            const reviewAuthor = comment.user?.login ?? 'unknown';
+            author = reviewAuthor.slice(0, 12); // Truncate long usernames
             const locParts = [comment.path, comment.line?.toString()].filter(Boolean);
-            location = locParts.length ? locParts.join(':') : 'Review';
+            location = truncateLocation(locParts.length ? locParts.join(':') : 'Review');
             bodyPreview = makePreview(comment.body);
         }
 
         data.push([comment.type === 'conversation' ? '💬' : '📝', author, createdDate, location, bodyPreview]);
     }
 
-    console.log(
-        table(data, {
-            columns: {
-                3: { width: 20, wrapWord: true },
-                4: { width: 50, wrapWord: true },
-            },
-        })
-    );
+    try {
+        console.log(
+            table(data, {
+                columns: {
+                    0: { width: 4 }, // Type emoji
+                    1: { width: 12, wrapWord: true }, // Author
+                    2: { width: 10 }, // Date
+                    3: { width: locationWidth, wrapWord: true }, // Location
+                    4: { width: previewWidth, wrapWord: true }, // Preview
+                },
+                columnDefault: {
+                    wrapWord: true,
+                },
+            })
+        );
+    } catch (_error) {
+        // Fallback to simple text output if table fails
+        logger.warn('Table rendering failed, falling back to simple output');
+
+        for (let i = 1; i < data.length; i++) {
+            const row = data[i];
+            if (row) {
+                const [type, author, date, location, preview] = row;
+                console.log(`${type} ${author} (${date}) - ${location}`);
+                console.log(`  ${preview}\n`);
+            }
+        }
+    }
 
     const conversationCount = comments.filter((c) => c.type === 'conversation').length;
     const reviewCount = comments.filter((c) => c.type === 'review').length;
