@@ -59,7 +59,7 @@ const reviewCurrentAction: TypedActionFunction<[]> = async (): Promise<void> => 
         logger.info('📖 Next steps:');
         logger.info(`   1. Review the comments in: ${outputFile}`);
         logger.info('   2. Use the prompt template at: project-docs/prompt-review-template.md');
-        logger.info(`   3. Call ClaudeCode: /coderabbit-review ${outputFile}`);
+        logger.info(`   3. Call ClaudeCode: /coderabbit-review ${prNumber}`);
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);
         logger.error({ error: errorMessage }, 'Failed to generate review comments');
