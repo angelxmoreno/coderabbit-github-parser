@@ -1,6 +1,6 @@
 {
-    "name": "coderabbit-github-parser",
-    "version": "1.0.0",
+    "name": "@angelxmoreno/coderabbit-github-parser",
+    "version": "0.1.0",
     "module": "src/cli.ts",
     "type": "module",
     "main": "dist/cli.js",
@@ -50,5 +50,9 @@
     },
     "engines": {
         "bun": ">=1.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/angelxmoreno/coderabbit-github-parser.git"
     }
 }

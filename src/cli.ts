@@ -16,7 +16,7 @@ const program = new Command();
 program
     .name('coderabbit-github-parser')
     .description('A CLI tool that fetches GitHub PR comments and parses them to markdown for AI agent consumption')
-    .version('1.0.0')
+    .version('0.1.0')
     .option('-d, --debug', 'output extra debugging information');
 
 program.hook('preAction', () => {
