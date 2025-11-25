@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.1](https://github.com/angelxmoreno/coderabbit-github-parser/compare/v1.0.0...v1.0.1) (2025-11-25)
+
+
+### Bug Fixes
+
+* fixed default naming of template ([5ff06dd](https://github.com/angelxmoreno/coderabbit-github-parser/commit/5ff06ddefc85f097045dd8b812ba133648572fff))
+* fixed pino flush ([cee0604](https://github.com/angelxmoreno/coderabbit-github-parser/commit/cee0604bf02a75a48b5cadce3e469ad96115a198))
+* fixed pino flush ([ffee759](https://github.com/angelxmoreno/coderabbit-github-parser/commit/ffee759daa89c5e4c1a3945f14fd29aee32b0ff8))
+* fixed pino to catch and log once ([5a1567d](https://github.com/angelxmoreno/coderabbit-github-parser/commit/5a1567dea8e3c543832e79145348251f14c6a6b8))
+
 ## 1.0.0 (2025-11-24)
 
 
