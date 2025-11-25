@@ -15,7 +15,7 @@ type InstallTemplateOptions = {
 
 type InstallScope = 'project' | 'global';
 
-const DEFAULT_FILENAME = 'coderabbit-review-template.md';
+const DEFAULT_FILENAME = 'coderabbit-review.md';
 const PROJECT_COMMANDS_DIR = '.claude/commands'; // User's project directory
 const GLOBAL_COMMANDS_DIR = path.join(os.homedir(), '.claude', 'commands');
 
@@ -54,7 +54,7 @@ const installTemplateAction: TypedActionFunction<[], InstallTemplateOptions> = a
     if (!sourceFile) {
         logger.error({ possibleSourcePaths }, 'Source template file not found in any expected location');
         logger.error('Template file could not be located in the installed package.');
-        process.exit(1);
+        throw new Error('Template file not found');
     }
 
     // Determine installation scope and paths
@@ -120,57 +120,51 @@ const installTemplateAction: TypedActionFunction<[], InstallTemplateOptions> = a
     const targetFile = path.join(targetDir, filename);
 
     logger.debug({ scope, targetDir, filename, targetFile }, 'Installation paths resolved');
-
-    try {
-        // Check if target directory exists, create if it doesn't
-        if (!fs.existsSync(targetDir)) {
-            logger.info({ targetDir }, 'Creating target directory');
-            fs.mkdirSync(targetDir, { recursive: true });
-        }
-
-        // Check if target file already exists
-        if (fs.existsSync(targetFile) && !options.force) {
-            if (options.interactive !== false) {
-                const overwrite = await confirm({
-                    message: `File already exists at ${targetFile}. Overwrite?`,
-                    default: false,
-                });
-
-                if (!overwrite) {
-                    logger.info('Installation cancelled by user');
-                    process.exit(0);
-                }
-            } else {
-                logger.warn({ targetFile }, 'Target file already exists');
-                logger.error('File already exists. Use --force to overwrite the existing file.');
-                process.exit(1);
-            }
-        }
-
-        // Copy the template file
-        logger.info({ sourceFile, targetFile }, 'Copying template file');
-        const templateContent = fs.readFileSync(sourceFile, 'utf-8');
-        fs.writeFileSync(targetFile, templateContent, 'utf-8');
-
-        logger.info('Template installed successfully!');
-        logger.info(`📄 Location: ${targetFile}`);
-        logger.info('📖 Usage:');
-        logger.info('1. Generate CodeRabbit comments:');
-        logger.info('   bun pr:coderabbit <PR_NUMBER> --format markdown > review-comments/pr<PR_NUMBER>.md');
-        logger.info('2. Use the template from your Claude commands directory');
-        logger.info('3. Follow the examples in the template for different analysis types');
-
-        if (scope === 'global') {
-            logger.info('🌐 Template installed globally - available in all projects');
-        } else {
-            logger.info('📁 Template installed locally - available in this project only');
-        }
-
-        logger.debug({ targetFile, scope }, 'Template installation completed successfully');
-    } catch (error: unknown) {
-        logger.error(error, 'Failed to install template');
-        process.exit(1);
+    // Check if target directory exists, create if it doesn't
+    if (!fs.existsSync(targetDir)) {
+        logger.info({ targetDir }, 'Creating target directory');
+        fs.mkdirSync(targetDir, { recursive: true });
     }
+
+    // Check if target file already exists
+    if (fs.existsSync(targetFile) && !options.force) {
+        if (options.interactive !== false) {
+            const overwrite = await confirm({
+                message: `File already exists at ${targetFile}. Overwrite?`,
+                default: false,
+            });
+
+            if (!overwrite) {
+                logger.info('Installation cancelled by user');
+                return;
+            }
+        } else {
+            logger.warn({ targetFile }, 'Target file already exists');
+            logger.error('File already exists. Use --force to overwrite the existing file.');
+            throw new Error('File already exists');
+        }
+    }
+
+    // Copy the template file
+    logger.info({ sourceFile, targetFile }, 'Copying template file');
+    const templateContent = fs.readFileSync(sourceFile, 'utf-8');
+    fs.writeFileSync(targetFile, templateContent, 'utf-8');
+
+    logger.info('Template installed successfully!');
+    logger.info(`📄 Location: ${targetFile}`);
+    logger.info('📖 Usage:');
+    logger.info('1. Generate CodeRabbit comments:');
+    logger.info('   cgp pr:coderabbit <PR_NUMBER> --format markdown > review-comments/pr<PR_NUMBER>.md');
+    logger.info('2. Use the template from your Claude commands directory');
+    logger.info('3. Follow the examples in the template for different analysis types');
+
+    if (scope === 'global') {
+        logger.info('🌐 Template installed globally - available in all projects');
+    } else {
+        logger.info('📁 Template installed locally - available in this project only');
+    }
+
+    logger.debug({ targetFile, scope }, 'Template installation completed successfully');
 };
 
 export const installTemplateProgram = createTypedCommand(
