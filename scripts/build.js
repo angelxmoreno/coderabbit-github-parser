@@ -2,6 +2,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { bunPluginPino } from 'bun-plugin-pino';
 
 const distDir = 'dist';
 
@@ -11,7 +12,7 @@ if (fs.existsSync(distDir)) {
 }
 fs.mkdirSync(distDir, { recursive: true });
 
-console.log('🔧 Building with Bun...');
+console.log('🔧 Building with Bun and bun-plugin-pino...');
 
 try {
     // Build the CLI entry point
@@ -22,6 +23,12 @@ try {
         format: 'esm',
         splitting: false,
         sourcemap: 'external',
+        plugins: [
+            bunPluginPino({
+                transports: ['pino-pretty'], // Include pino-pretty transport
+                logging: 'quiet', // Reduce plugin noise
+            }),
+        ],
     });
 
     if (result.success) {
