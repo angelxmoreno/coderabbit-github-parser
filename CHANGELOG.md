@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/angelxmoreno/coderabbit-github-parser/compare/v1.0.1...v1.0.2) (2025-11-25)
+
+
+### Bug Fixes
+
+* fixed pino worker paths with bun-pino ([1b8beed](https://github.com/angelxmoreno/coderabbit-github-parser/commit/1b8beed0604db5455c29a658e915adc4d7059328))
+* fixed pino worker paths with bun-pino ([e06e5d4](https://github.com/angelxmoreno/coderabbit-github-parser/commit/e06e5d4af0a44cc1ddf58874dd91cf149503ad66))
+
 ## [1.0.1](https://github.com/angelxmoreno/coderabbit-github-parser/compare/v1.0.0...v1.0.1) (2025-11-25)
 
 
