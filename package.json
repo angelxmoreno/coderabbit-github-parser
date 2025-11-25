@@ -45,6 +45,7 @@
         "@commitlint/cli": "^20.1.0",
         "@commitlint/config-conventional": "^20.0.0",
         "@types/bun": "^1.3.2",
+        "bun-plugin-pino": "^1.4.0",
         "lefthook": "^2.0.4",
         "typescript": "^5.9.3"
     },
